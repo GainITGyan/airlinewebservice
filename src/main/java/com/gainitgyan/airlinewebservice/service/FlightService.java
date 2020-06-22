@@ -7,7 +7,9 @@ import java.util.stream.StreamSupport;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.gainitgyan.airlinewebservice.dto.FlightDto;
 import com.gainitgyan.airlinewebservice.entity.Flight;
@@ -36,10 +38,17 @@ public class FlightService implements IFlightService {
 		Optional<Flight> flight = flightRepo.findById(flightId);
 		
 		FlightDto dto = null;
+		
+		dto.getCapacity();
+		
 		if(flight.isPresent())
 		{
 			dto = new FlightDto();
 			BeanUtils.copyProperties(flight.get(), dto);
+		}
+		else
+		{
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fligt Resource Not Found!");
 		}
 		
 		return dto;
@@ -60,7 +69,7 @@ public class FlightService implements IFlightService {
 		}
 		else
 		{
-			//TODO throw Exception
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fligt Resource Not Found!");
 		}
 		
 		return flightDto;
@@ -75,7 +84,7 @@ public class FlightService implements IFlightService {
 		}
 		else
 		{
-			//TODO throw Exception
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fligt Resource Not Found!");
 		}
 		
 	}
