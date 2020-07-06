@@ -7,10 +7,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.PositiveOrZero;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gainitgyan.airlinewebservice.validation.FlightMfdBy;
 
-public class FlightDto {
+public class FlightDto extends RepresentationModel<FlightDto>{
 	private Integer id;
 
 	@NotNull
