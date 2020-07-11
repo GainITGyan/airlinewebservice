@@ -12,20 +12,29 @@ import org.springframework.hateoas.RepresentationModel;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gainitgyan.airlinewebservice.validation.FlightMfdBy;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "FlightDto" , description = "Model Object for Flight Resource")
 public class FlightDto extends RepresentationModel<FlightDto>{
+	
+	@Schema(name = "Flight Id" , description = "Flight Id of Flight Resource")
 	private Integer id;
 
+	@Schema(name = "Flight Number" , description = "Flight Number of Flight Resource")
 	@NotNull
 	private String flightNumber;
 
+	@Schema(name = "Capacity" , description = "Flight seat capacity of Flight Resource")
 	@NotNull
 	@PositiveOrZero(message = "Invalid Capacity value")
 	private Integer capacity;
 
+	@Schema(name = "mfdBy" , description = "Manufactured by of Flight Resource")
 	@NotNull
 	@FlightMfdBy
 	private String mfdBy;
 	
+	@Schema(name = "mfdOn" , description = "Manufactured On of Flight Resource")
 	@NotNull
 	@Past(message="Date cannnot be a future value")
 	@JsonFormat(pattern = "MM/dd/yyyy")
