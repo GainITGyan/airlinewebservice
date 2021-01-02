@@ -59,8 +59,10 @@ public class LoggingAspect {
 	public void applicaitonExceptionPackage() {
 		
 	}
+	@Pointcut("this(org.springframework.web.filter.GenericFilterBean)")
+	private void genericFilterBeanImpl() {}
 	
-	@AfterThrowing(pointcut = "applicaitonExceptionPackage()",throwing = "e")
+	@AfterThrowing(pointcut = "applicaitonExceptionPackage() && !genericFilterBeanImpl()",throwing = "e")
 	public void logAfterThrowing(JoinPoint joinpoint, Throwable e) {
 		logger.error("Exception in {}.{} with cause = {} , with message = {}",
 				joinpoint.getSignature().getDeclaringTypeName(),joinpoint.getSignature().getName(),
