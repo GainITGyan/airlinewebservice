@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -14,11 +15,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.gainitgyan.airlinewebservice.exception.JWTAccessDeniedHandler;
+import com.gainitgyan.airlinewebservice.exception.JWTAuthenticationEntryPoint;
 import com.gainitgyan.airlinewebservice.filter.JWTTokenAuthorizationFilter;
 import com.gainitgyan.airlinewebservice.service.UserService;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -27,6 +31,12 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private JWTTokenAuthorizationFilter jwtTokenAuthorizationFilter;
+	
+	@Autowired
+	private JWTAccessDeniedHandler accessDeniedHandler;
+	
+	@Autowired
+	private JWTAuthenticationEntryPoint authenticationEntryPoint;
 	
 	private static final String[] PUBLIC_URLS = {"/login"};
 
@@ -40,7 +50,8 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable().cors().and()
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 		.authorizeRequests().antMatchers(PUBLIC_URLS).permitAll()
-		.anyRequest().authenticated()
+		.anyRequest().authenticated().and().exceptionHandling().accessDeniedHandler(accessDeniedHandler)
+		.authenticationEntryPoint(authenticationEntryPoint)
 		.and().addFilterBefore(this.jwtTokenAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
 	}

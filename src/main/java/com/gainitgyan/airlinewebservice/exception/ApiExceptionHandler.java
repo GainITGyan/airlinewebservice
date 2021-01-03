@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @RestControllerAdvice(basePackages = "com.gainitgyan.airlinewebservice")
@@ -97,4 +98,21 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		return new ResponseEntity<ApiErrorResponse>(apiError,HttpStatus.INTERNAL_SERVER_ERROR);
 		
 	}
+	@Override
+	protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
+			HttpStatus status, WebRequest req) {
+		HttpServletRequest request = ((ServletWebRequest) req).getRequest();
+		List<String> errors = Arrays.asList(ex.getMessage());
+
+		ApiErrorResponse apiError = ApiErrorResponseBuilder.getInstance()
+				.withErrorId("Airline-" + ThreadContext.get("requestid"))
+				.forPath(request.getRequestURI())
+				.withErrors(errors)
+				.withMessage(ex.getMessage())
+				.withStatus(status.value())
+				.build();
+
+		return new ResponseEntity<Object>(apiError, status);
+	}
+	
 }

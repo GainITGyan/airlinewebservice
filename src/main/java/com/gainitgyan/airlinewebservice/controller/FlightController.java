@@ -15,6 +15,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -156,6 +157,7 @@ public class FlightController {
 					mediaType=MediaType.APPLICATION_JSON_VALUE))
 	})
 	@PutMapping(path = "/flight",consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+	@PreAuthorize("hasAuthority('flight_update') && hasauth")
 	public EntityModel<FlightDto> updateFlight(
 			@Parameter(name="flightDto" , description = "Flight Dto in the request body",
 			required=true, content = @Content(schema = @Schema(implementation = FlightDto.class)), 
@@ -178,6 +180,7 @@ public class FlightController {
 			@ApiResponse(responseCode = "404" , description = "Flight Resource Not Found",
 					content = @Content(schema = @Schema(implementation = ApiErrorResponse.class),
 					mediaType=MediaType.APPLICATION_JSON_VALUE)),
+			
 			@ApiResponse(responseCode="500" , description = "Server Exception",
 					content = @Content(schema = @Schema(implementation = ApiErrorResponse.class),
 					mediaType=MediaType.APPLICATION_JSON_VALUE))
