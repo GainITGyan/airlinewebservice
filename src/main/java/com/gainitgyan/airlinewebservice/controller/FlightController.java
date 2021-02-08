@@ -157,7 +157,7 @@ public class FlightController {
 					mediaType=MediaType.APPLICATION_JSON_VALUE))
 	})
 	@PutMapping(path = "/flight",consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-	@PreAuthorize("hasAuthority('flight_update') && hasauth")
+	@PreAuthorize("hasAuthority('flight_update')")
 	public EntityModel<FlightDto> updateFlight(
 			@Parameter(name="flightDto" , description = "Flight Dto in the request body",
 			required=true, content = @Content(schema = @Schema(implementation = FlightDto.class)), 
